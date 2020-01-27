@@ -1,9 +1,9 @@
 #* @Plumber Example
 
 library(plumber)
-library(plumberAPI)
+library(stockAPI)
 
-#' @filter cors
+#* @filter cors
 cors <- function(req, res) {
 
   res$setHeader("Access-Control-Allow-Origin", "*")
@@ -19,24 +19,11 @@ cors <- function(req, res) {
 
 }
 
-#* Echo back the input
-#* @param msg The message to echo
+#* Example of customizing graphical output
+#* @png (width = 1000, height = 1000)
+#* @serializer contentType list(type="image/jpeg")
+#* @param stocks  Stocks in JSON
 #* @get /save_cars
-save_cars <- function() {
-  save_cars()
-  list(msg = paste0("Completed save cars"))
-}
-
-#* Echo back the input
-#* @param time The time needed to wait
-#* @get /wait
-wait <- function(time = 5) {
-  Sys.sleep(time)
-  list(msg = glue("Completed wait for {time}"))
-}
-
-#* Echo back the input
-#* @get /data
-data <- function() {
-  toJSON(mtcars)
+save_cars <- function(stocks = '["AAPL"]') {
+  get_stocks(stocks = stocks)
 }

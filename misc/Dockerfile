@@ -14,7 +14,8 @@ RUN R CMD javareconf
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('glue')"
 RUN R -e "install.packages('tidyverse')"
-RUN R -e 'devtools::install_github("fdrennan/plumberAPI")'
+RUN R -e "install.packages('tidyquant')"
+RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
 
 EXPOSE 8000
 ENTRYPOINT ["R", "-e", "pr <- plumber::plumb(commandArgs()[4]); pr$run(host='0.0.0.0', port=8000)"]

@@ -1,3 +1,4 @@
+#' @param stocks Tickers in JSON format
 #' @export get_stocks
 get_stocks <- function(stocks = '["AAPL","DIA"] ') {
   stocks <- fromJSON(stocks)
@@ -9,10 +10,13 @@ get_stocks <- function(stocks = '["AAPL","DIA"] ') {
   if(length(stocks) == 1) {
     mult_stocks$symbol = stocks
   }
-  ggplot(mult_stocks) +
+  gg <-
+    ggplot(mult_stocks) +
     aes(x = date, y = close, colour = symbol) +
     geom_line()
+
+  print(gg)
 }
 
 
-get_stocks(stocks = '["AAPL"]')
+
