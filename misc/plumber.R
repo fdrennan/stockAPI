@@ -19,11 +19,16 @@ cors <- function(req, res) {
 
 }
 
-#* Example of customizing graphical output
 #* @png (width = 1000, height = 1000)
 #* @serializer contentType list(type="image/jpeg")
 #* @param stocks  Stocks in JSON
-#* @get /save_cars
-save_cars <- function(stocks = '["AAPL"]') {
-  get_stocks(stocks = stocks)
+#* @get /get_stocks
+get_stocks <- function(stocks = '["AAPL"]') {
+  stockAPI::get_stocks(stocks = stocks, DATA = FALSE)
+}
+
+#* @param stocks  Stocks in JSON
+#* @get /get_stocks_data
+get_stocks_data <- function(stocks = '["AAPL"]') {
+  stockAPI::get_stocks(stocks = stocks, DATA = TRUE)
 }
