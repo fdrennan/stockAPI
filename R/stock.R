@@ -10,13 +10,14 @@ get_stocks <- function(stocks = '["AAPL","DIA"]', DATA = FALSE) {
                         from = "2016-01-01",
                         to   = "2017-01-01")
 
+  if(length(stocks) == 1) {
+    mult_stocks$symbol = stocks
+  }
+
   if (DATA) {
     return(toJSON(mult_stocks))
   }
 
-  if(length(stocks) == 1) {
-    mult_stocks$symbol = stocks
-  }
   gg <-
     ggplot(mult_stocks) +
     aes(x = date, y = close, colour = symbol) +
