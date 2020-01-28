@@ -19,8 +19,7 @@ cors <- function(req, res) {
 
 }
 
-#* @png (width = 1000, height = 1000)
-#* @serializer contentType list(type="image/jpeg")
+#* @jpeg (width = 1000, height = 800)
 #* @param stocks  Stocks in JSON
 #* @get /get_stocks
 get_stocks <- function(stocks = '["AAPL"]') {

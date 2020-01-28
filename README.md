@@ -1,4 +1,6 @@
-# plumberAPI
+# Stock API
+
+The companion project: [Stock React Application](https://github.com/fdrennan/stockReactApp) 
 
 Get your public ip address from the EC2 server you created. 
 

@@ -1,2 +1,2 @@
-docker build -t dockerfile .
+docker build -t reactr .
 docker build -t myname/apache-test .
