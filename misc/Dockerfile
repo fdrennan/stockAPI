@@ -15,6 +15,7 @@ RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('glue')"
 RUN R -e "install.packages('tidyverse')"
 RUN R -e "install.packages('tidyquant')"
+RUN R -e "install.packages('tictoc')"
 
 COPY plumber.R /app/plumber.R
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'

@@ -33,7 +33,7 @@ get_stocks <- function(stocks = '["AAPL"]',
   response <- list(statusCode = 200,
                    data = "",
                    message = "Success!",
-                   console = list(
+                   metaData = list(
                      args = list(
                        stocks = stocks,
                        DATA = DATA,
@@ -55,7 +55,7 @@ get_stocks <- function(stocks = '["AAPL"]',
                                             startDate = startDate,
                                             endDate = endDate)
       timer <- toc(quiet = T)
-      response$console$runtime <- as.numeric(timer$toc - timer$tic)
+      response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
       return(response)
     },
@@ -76,16 +76,18 @@ get_stocks <- function(stocks = '["AAPL"]',
 #* @param startDate  Stocks in JSON
 #* @param endDate  Stocks in JSON
 #* @get /get_stocks_data
+#* @serializer unboxedJSON
 get_stocks_data <- function(stocks = '["AAPL"]',
                        startDate = '2019-01-01',
                        endDate = '2020-01-01',
                        DATA = TRUE) {
 
+  print(stocks)
   # Build the response object (list will be serialized as JSON)
   response <- list(statusCode = 200,
                    data = "",
                    message = "Success!",
-                   console = list(
+                   metaData = list(
                      args = list(
                        stocks = stocks,
                        DATA = DATA,
@@ -107,7 +109,7 @@ get_stocks_data <- function(stocks = '["AAPL"]',
                                             startDate = startDate,
                                             endDate = endDate)
       timer <- toc(quiet = T)
-      response$console$runtime <- as.numeric(timer$toc - timer$tic)
+      response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
       return(response)
     },

@@ -6,6 +6,10 @@ get_stocks <- function(stocks = '["AAPL","DIA"]',
                        startDate = "2016-01-01",
                        endDate = "2017-01-01") {
 
+  if(str_length(stocks) <= 4) {
+    stop(glue('Must submit valid stock ID, you submitted {stocks}'))
+  }
+
   if (startDate >= endDate) {
     stop('startDate must be less than endDate')
   }
