@@ -31,7 +31,16 @@ get_stocks <- function(stocks = '["AAPL","DIA"]',
   gg <-
     ggplot(mult_stocks) +
     aes(x = date, y = close, colour = symbol) +
-    geom_line()
+    geom_line() +
+    theme(plot.background = element_rect(fill = "#FFF8DC"),
+          panel.background = element_rect(fill = "#FFF8DC"),
+          legend.background = element_rect(fill = "#FFF8DC"),
+          axis.line.x = element_line(color = "black", linetype = "dotted"),
+          axis.line.y =  element_line(color = "black", linetype = "dotted"),
+          legend.key = element_blank()) +
+    xlab('Date') +
+    ylab('Price') +
+    scale_x_date(date_labels = "%b %d")
 
   print(gg)
 }
