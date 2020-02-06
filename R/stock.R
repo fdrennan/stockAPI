@@ -9,6 +9,12 @@ get_stocks <- function(stocks = '["AAPL","DIA"]',
                        ma_days = 50) {
   ma_days = as.numeric(ma_days)
 
+  n_days <- as.Date(endDate)-as.Date(startDate)
+  max_days <- 365*2
+  if(n_days > max_days) {
+    stop(glue('You are querying for {n_days} days. Max days allowed: {max_days}'))
+  }
+
   if(str_length(stocks) <= 4) {
     stop(glue('Must submit valid stock ID, you submitted {stocks}'))
   }
@@ -17,6 +23,10 @@ get_stocks <- function(stocks = '["AAPL","DIA"]',
     stop('startDate must be less than endDate')
   }
   stocks <- fromJSON(stocks)
+
+  if(length(stocks) > 5) {
+    stop('Please only search up to 4 stocks at a time')
+  }
 
   mult_stocks <- tq_get(stocks,
                         get  = "stock.prices",
