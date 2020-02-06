@@ -19,15 +19,18 @@ cors <- function(req, res) {
 
 }
 
-#* @jpeg (width = 1000, height = 800)
+#  EXCLUDED@jpeg (width = 1000, height = 800)
+#* @jpeg (width = 1523, height = 895)
 #* @param stocks  Stocks in JSON
 #* @param startDate  Stocks in JSON
 #* @param endDate  Stocks in JSON
+#* @param ma_days  Stocks in JSON
 #* @get /get_stocks
 get_stocks <- function(stocks = '["AAPL"]',
                        startDate = '2019-01-01',
                        endDate = '2020-01-01',
-                       DATA = FALSE) {
+                       DATA = FALSE,
+                       ma_days = 50) {
 
   # Build the response object (list will be serialized as JSON)
   response <- list(statusCode = 200,
@@ -38,7 +41,8 @@ get_stocks <- function(stocks = '["AAPL"]',
                        stocks = stocks,
                        DATA = DATA,
                        startDate = startDate,
-                       endDate = endDate
+                       endDate = endDate,
+                       ma_days = ma_days
                      ),
                      runtime = 0
                    )
@@ -53,7 +57,8 @@ get_stocks <- function(stocks = '["AAPL"]',
       response$data <- stockAPI::get_stocks(stocks = stocks,
                                             DATA = DATA,
                                             startDate = startDate,
-                                            endDate = endDate)
+                                            endDate = endDate,
+                                            ma_days = ma_days)
       timer <- toc(quiet = T)
       response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
@@ -71,6 +76,7 @@ get_stocks <- function(stocks = '["AAPL"]',
 
 
 }
+
 
 #* @param stocks  Stocks in JSON
 #* @param startDate  Stocks in JSON
@@ -125,3 +131,15 @@ get_stocks_data <- function(stocks = '["AAPL"]',
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
