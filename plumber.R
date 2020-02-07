@@ -189,7 +189,10 @@ function(req, res, file_name = 'data.xlsx') {
   message(glue('Within stocks_excel {Sys.time()}'))
   res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
 
-  make_xlsx(file_name)
+
+  stock_data <- stockAPI::get_stocks(DATA = T)
+  stock_data <- fromJSON(stock_data)
+  write.xlsx(x = stock_data, file = file_name, sheetName = 'sheet_1')
 
   bin <- readBin(file_name, "raw", n=file.info(file_name)$size)
   file.remove(file_name)
