@@ -4,6 +4,7 @@ library(plumber)
 library(stockAPI)
 library(tictoc)
 
+message(glue('Within Plumber API {Sys.time()}'))
 # serializer_excel <- function(){
 #   function(val, req, res, errorHandler){
 #     tryCatch({
@@ -40,7 +41,7 @@ library(tictoc)
 
 #* @filter cors
 cors <- function(req, res) {
-  message(Sys.time())
+  message(glue('Within filter {Sys.time()}'))
 
   res$setHeader("Access-Control-Allow-Origin", "*")
 
@@ -78,7 +79,7 @@ function(stocks = '["AAPL"]',
                        endDate = '2020-01-01',
                        DATA = FALSE,
                        ma_days = 50) {
-  message(Sys.time())
+  message(glue('Within get_stocks {Sys.time()}'))
 
   # Build the response object (list will be serialized as JSON)
   response <- list(statusCode = 200,
@@ -135,7 +136,7 @@ function(stocks = '["AAPL"]',
          startDate = '2019-01-01',
          endDate = '2020-01-01',
          DATA = TRUE) {
-  message(Sys.time())
+  message(glue('Within get_stocks_data {Sys.time()}'))
 
   print(stocks)
   # Build the response object (list will be serialized as JSON)
@@ -185,7 +186,7 @@ function(stocks = '["AAPL"]',
 #* @param file_name
 #* @get /stocks_excel
 function(req, res, file_name = 'data.xlsx') {
-  message(Sys.time())
+  message(glue('Within stocks_excel {Sys.time()}'))
   res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
 
   make_xlsx(file_name)
