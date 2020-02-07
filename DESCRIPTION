@@ -12,6 +12,7 @@ Depends:
     glue,
     tidyverse,
     jsonlite,
-    tidyquant
+    tidyquant,
+    openxlsx
 LazyData: true
 RoxygenNote: 7.0.2

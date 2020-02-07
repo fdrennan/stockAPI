@@ -3,6 +3,41 @@
 library(plumber)
 library(stockAPI)
 library(tictoc)
+
+# serializer_excel <- function(){
+#   function(val, req, res, errorHandler){
+#     tryCatch({
+#       res$setHeader("Content-Type", "application/vnd.ms-excel")
+#       res$setHeader("Content-Disposition", 'attachment; filename=name_of_excel_file.xls')
+#       res$body <- paste0(val, collapse="\n")
+#       return(res$toResponse())
+#     }, error=function(e){
+#       errorHandler(req, res, e)
+#     })
+#   }
+# }
+#
+# plumber::addSerializer("excel", serializer_excel)
+#
+# serializer_csv <- function(){
+#   function(val, req, res, errorHandler){
+#     tryCatch({
+#       res$setHeader("Content-Type", "application/vnd.ms-excel")
+#       res$setHeader("Content-Disposition", 'attachment; filename="xxx.csv"')
+#       res$body <- paste0(val, collapse="\n")
+#       return(res$toResponse())
+#     }, error=function(e){
+#       errorHandler(req, res, e)
+#     })
+#   }
+# }
+#
+# plumber::addSerializer("csv", serializer_csv)
+
+
+
+
+
 #* @filter cors
 cors <- function(req, res) {
 
@@ -19,6 +54,17 @@ cors <- function(req, res) {
 
 }
 
+
+# #* @serializer csv
+# #* @get /csv
+# function() {
+#   df <- data.frame(CHAR = letters, NUM = rnorm(length(letters)), stringsAsFactors = F)
+#   csv_file <- tempfile(fileext = ".csv")
+#   on.exit(unlink(csv_file), add = TRUE)
+#   write.csv(df, file = csv_file)
+#   readLines(csv_file)
+# }
+
 #  EXCLUDED@jpeg (width = 1000, height = 800)
 #* @jpeg (width = 1523, height = 895)
 #* @param stocks  Stocks in JSON
@@ -26,7 +72,7 @@ cors <- function(req, res) {
 #* @param endDate  Stocks in JSON
 #* @param ma_days  Stocks in JSON
 #* @get /get_stocks
-get_stocks <- function(stocks = '["AAPL"]',
+function(stocks = '["AAPL"]',
                        startDate = '2019-01-01',
                        endDate = '2020-01-01',
                        DATA = FALSE,
@@ -83,10 +129,10 @@ get_stocks <- function(stocks = '["AAPL"]',
 #* @param endDate  Stocks in JSON
 #* @get /get_stocks_data
 #* @serializer unboxedJSON
-get_stocks_data <- function(stocks = '["AAPL"]',
-                       startDate = '2019-01-01',
-                       endDate = '2020-01-01',
-                       DATA = TRUE) {
+function(stocks = '["AAPL"]',
+         startDate = '2019-01-01',
+         endDate = '2020-01-01',
+         DATA = TRUE) {
 
   print(stocks)
   # Build the response object (list will be serialized as JSON)
@@ -132,10 +178,45 @@ get_stocks_data <- function(stocks = '["AAPL"]',
 
 }
 
+#* @serializer contentType list(type="application/vnd.ms-excel")
+#* @param file_name
+#* @get /stocks_excel
+function(req, res, file_name = 'data.xlsx') {
+  # This header is a convention that instructs browsers to present the response
+  # as a download named filename rather than trying to render it inline.
+  # attachmentString = paste0("attachment; filename=", filename)
+  #
+  # res$setHeader("Content-Disposition", attachmentString)
+
+  # Read in the raw contents of the binary file
 
 
+  #Return the binary contents
+  # bin
+  res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
+
+  # Create workbook (i.e. file) to put data in
+  fileName <- "iris-mtcars.xlsx"
+  excel <- createWorkbook(fileName)
+  # Create sheet names for each wanted
+  firstSheet <- "iris"
+  secondSheet <- "mtcars"
+  # Add worksheets to workbook
+  addWorksheet(excel, firstSheet)
+  addWorksheet(excel, secondSheet)
+  # Add data to workbook
+  writeData(excel, sheet = 1, iris)
+  writeData(excel, sheet = 2, mtcars, rowNames = TRUE)
+  # Finally write out to file
+  saveWorkbook(excel, file = fileName, overwrite = TRUE)
 
 
+  bin <- readBin(fileName, "raw", n=file.info(fileName)$size)
+  bin
+  # read.xlsx(filename, 'sheet_1')
+  # write.csv(iris, filename, row.names = FALSE)
+  # bin
+}
 
 
 
