@@ -40,6 +40,7 @@ library(tictoc)
 
 #* @filter cors
 cors <- function(req, res) {
+  message(Sys.time())
 
   res$setHeader("Access-Control-Allow-Origin", "*")
 
@@ -77,6 +78,7 @@ function(stocks = '["AAPL"]',
                        endDate = '2020-01-01',
                        DATA = FALSE,
                        ma_days = 50) {
+  message(Sys.time())
 
   # Build the response object (list will be serialized as JSON)
   response <- list(statusCode = 200,
@@ -133,6 +135,7 @@ function(stocks = '["AAPL"]',
          startDate = '2019-01-01',
          endDate = '2020-01-01',
          DATA = TRUE) {
+  message(Sys.time())
 
   print(stocks)
   # Build the response object (list will be serialized as JSON)
@@ -182,36 +185,14 @@ function(stocks = '["AAPL"]',
 #* @param file_name
 #* @get /stocks_excel
 function(req, res, file_name = 'data.xlsx') {
-  # This header is a convention that instructs browsers to present the response
-  # as a download named filename rather than trying to render it inline.
-  # attachmentString = paste0("attachment; filename=", filename)
-  #
-  # res$setHeader("Content-Disposition", attachmentString)
-
-  # Read in the raw contents of the binary file
-
-
-  #Return the binary contents
-  # bin
+  message(Sys.time())
   res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
 
-  # Create workbook (i.e. file) to put data in
-  fileName <- "iris-mtcars.xlsx"
-  excel <- createWorkbook(fileName)
-  # Create sheet names for each wanted
-  firstSheet <- "iris"
-  secondSheet <- "mtcars"
-  # Add worksheets to workbook
-  addWorksheet(excel, firstSheet)
-  addWorksheet(excel, secondSheet)
-  # Add data to workbook
-  writeData(excel, sheet = 1, iris)
-  writeData(excel, sheet = 2, mtcars, rowNames = TRUE)
-  # Finally write out to file
-  saveWorkbook(excel, file = fileName, overwrite = TRUE)
+  make_xlsx(file_name)
 
+  bin <- readBin(file_name, "raw", n=file.info(file_name)$size)
+  file.remove(file_name)
 
-  bin <- readBin(fileName, "raw", n=file.info(fileName)$size)
   bin
   # read.xlsx(filename, 'sheet_1')
   # write.csv(iris, filename, row.names = FALSE)

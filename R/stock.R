@@ -68,4 +68,14 @@ get_stocks <- function(stocks = '["AAPL","DIA"]',
 }
 
 
+#' @export make_xlsx
+make_xlsx <- function(filename,
+                      stocks = stocks,
+                      startDate = startDate,
+                      endDate = endDate) {
+  stock_data <- stockAPI::get_stocks(DATA = T)
+  stock_data <- fromJSON(stock_data)
+  write.xlsx(x = stock_data, file = filename, sheetName = 'sheet_1')
+}
+
 
