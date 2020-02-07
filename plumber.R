@@ -185,12 +185,20 @@ function(stocks = '["AAPL"]',
 #* @serializer contentType list(type="application/vnd.ms-excel")
 #* @param file_name
 #* @get /stocks_excel
-function(req, res, file_name = 'data.xlsx') {
+function(req, res,
+         file_name = 'data.xlsx',
+         stocks = '["AAPL"]',
+         startDate = '2019-01-01',
+         endDate = '2020-01-01',
+         DATA = TRUE) {
   message(glue('Within stocks_excel {Sys.time()}'))
   res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
 
 
-  stock_data <- stockAPI::get_stocks(DATA = T)
+  stock_data <- stockAPI::get_stocks(stocks = stocks,
+                                     DATA = DATA,
+                                     startDate = startDate,
+                                     endDate = endDate)
   stock_data <- fromJSON(stock_data)
   write.xlsx(x = stock_data, file = file_name, sheetName = 'sheet_1')
 
