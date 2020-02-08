@@ -19,13 +19,14 @@ RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"
 
-COPY plumber.R /app/plumber.R
+
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
 
 RUN apt-get install -y \
   texlive-latex-recommended \
   pandoc
 
+COPY plumber.R /app/plumber.R
 COPY base_notebook.Rmd base_notebook.Rmd
 
 EXPOSE 8000
