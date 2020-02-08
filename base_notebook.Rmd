@@ -17,9 +17,18 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 library(tidyquant)
+library(ggplot2)
 if(params$html_page) {
   stocks <- tq_get(fromJSON(params$stocks))
   print(stocks)
+  print(glimpse)
+  
+  gg <- 
+    ggplot(stocks) +
+    aes(x = date, y = close, colour = symbol) +
+    geom_line()
+  
+  print(gg)
 }
 
 print(params)
