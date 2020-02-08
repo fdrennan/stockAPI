@@ -1,7 +1,8 @@
-FROM rocker/verse
+FROM trestletech/plumber
 MAINTAINER Docker User <docker@user.org>
 
 RUN apt-get update --allow-releaseinfo-change -qq && apt-get install -y \
+  texlive-full \
   git-core \
   libssl-dev \
   default-jdk \
@@ -13,12 +14,19 @@ RUN R CMD javareconf
 
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('glue')"
+RUN R -e "install.packages('tidyverse')"
 RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"
 
 COPY plumber.R /app/plumber.R
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
+
+RUN apt-get install -y \
+  texlive-latex-recommended \
+  pandoc
+
+COPY base_notebook.Rmd base_notebook.Rmd
 
 EXPOSE 8000
 ENTRYPOINT ["R", "-e", "pr <- plumber::plumb(commandArgs()[4]); pr$run(host='0.0.0.0', port=8000)"]
