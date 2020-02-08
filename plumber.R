@@ -184,6 +184,9 @@ function(stocks = '["AAPL"]',
 
 #* @serializer contentType list(type="application/vnd.ms-excel")
 #* @param file_name
+#* @param stocks
+#* @param startDate
+#* @param endDate
 #* @get /stocks_excel
 function(req, res,
          file_name = 'data.xlsx',
