@@ -1,4 +1,4 @@
-FROM trestletech/plumber
+FROM rocker/verse
 MAINTAINER Docker User <docker@user.org>
 
 RUN apt-get update --allow-releaseinfo-change -qq && apt-get install -y \
@@ -13,7 +13,6 @@ RUN R CMD javareconf
 
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('glue')"
-RUN R -e "install.packages('tidyverse')"
 RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"

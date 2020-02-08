@@ -211,9 +211,41 @@ function(req, res,
   # bin
 }
 
+#* @serializer contentType list(type="application/pdf")
+#* @get /pdf
+function(){
+  tmp <- tempfile()
+  rmarkdown::render("base_notebook.Rmd",
+                    output_format = 'pdf_document',
+                    params = list(
+    year = 2017,
+    region = "Asia",
+    printcode = FALSE,
+    data = "file2.csv"
+  ), output_file = tmp)
+
+  readBin(glue('{tmp}.pdf'), "raw", n=file.info(glue('{tmp}.pdf'))$size)
+}
 
 
 
+
+#* @param year A number
+#* @get /html
+function(res, year = 2019, region = 'Asia', data = 'file2.csv'){
+  tmp <- tempfile()
+  rmarkdown::render("base_notebook.Rmd",
+                    output_format = 'html_document',
+                    params = list(
+                      year = year,
+                      region = region,
+                      printcode = FALSE,
+                      data = data
+                    ), output_file = tmp)
+
+  include_html(glue('{tmp}.html'), res)
+  # readBin(glue('{tmp}.html'), "raw", n=file.info(glue('{tmp}.html'))$size)
+}
 
 
 
