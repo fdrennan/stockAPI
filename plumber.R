@@ -238,7 +238,7 @@ function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=FALS
 #* @get /html
 function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=TRUE){
   tmp <- tempfile()
-
+  browser()
 
   rmarkdown::render("base_notebook.Rmd",
                     output_format = 'html_document',
