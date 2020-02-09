@@ -222,10 +222,8 @@ function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=FALS
                     output_format = 'pdf_document',
                     params = list(
                       stocks = stocks,
-                      region = c(region, region, region),
-                      printcode = FALSE,
                       data = data,
-                      html_page=html_page
+                      html_page = html_page
                     ), output_file = tmp)
 
   readBin(glue('{tmp}.pdf'), "raw", n=file.info(glue('{tmp}.pdf'))$size)
