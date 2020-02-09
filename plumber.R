@@ -236,16 +236,14 @@ function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=FALS
 
 #* @param year A number
 #* @get /html
-function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=TRUE){
+function(res, stocks = 2019, data = 'file2.csv', html_page=TRUE){
   tmp <- tempfile()
-  browser()
+
 
   rmarkdown::render("base_notebook.Rmd",
                     output_format = 'html_document',
                     params = list(
                       stocks = stocks,
-                      region = c(region, region, region),
-                      printcode = FALSE,
                       data = data,
                       html_page=html_page
                     ), output_file = tmp)

@@ -26,8 +26,8 @@ RUN apt-get install -y \
   texlive-latex-recommended \
   pandoc
 
-COPY plumber.R /app/plumber.R
 COPY base_notebook.Rmd base_notebook.Rmd
+COPY plumber.R /app/plumber.R
 
 EXPOSE 8000
 ENTRYPOINT ["R", "-e", "pr <- plumber::plumb(commandArgs()[4]); pr$run(host='0.0.0.0', port=8000)"]

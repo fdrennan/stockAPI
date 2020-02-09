@@ -1,37 +1,73 @@
 ---
+title: "Parameterized Document with React and Plumber"
+params:
+  data: file.csv
+  stocks: '["AAPL", "MO"]'
+  html_page: TRUE
+  title: Stock Stuff
+output:
+  html_document: default
+  pdf_document: default
+---
+
+What the YAML looks like
+```
+---
 title: "My Document"
 params:
   data: file.csv
-  printcode: yes
-  region: Europe
-  stocks: 2018
+  stocks: '["AAPL", "MO", "AMZN"]'
   html_page: TRUE
+  title: Stock Stuff
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
+```
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+```{r}
+stock_vector <- jsonlite::fromJSON(params$stocks)
+print(params)
+```
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+## Will evaluate if more than 1 stock selected.
+```{r}
+knitr::opts_chunk$set(eval = (length(stock_vector) >= 2), message=FALSE, warning=FALSE )
+```
+
+## `r params$title`
 
 ```{r}
 library(tidyquant)
 library(ggplot2)
-if(params$html_page) {
-  stocks <- tq_get(fromJSON(params$stocks))
-  print(stocks)
-  print(glimpse)
-  
-  gg <- 
-    ggplot(stocks) +
-    aes(x = date, y = close, colour = symbol) +
-    geom_line()
+library(tidyverse)
+```
+
+
+```{r}
+print(params)
+
+stocks <- tq_get(stock_vector)
+
+glimpse(stocks)
+
+gg <- 
+  ggplot(stocks) +
+  aes(x = date, y = close, colour = symbol) +
+  geom_line()
   
   print(gg)
-}
+```
 
-print(params)
+```{r}
+stocks %>% 
+  select(date, symbol, adjusted) %>% 
+  pivot_wider(names_from = symbol, values_from = c(
+    adjusted
+  )) %>% 
+  select_if(is.numeric) %>% 
+  cor
+
 ```
 
 ```{r}
