@@ -13,6 +13,7 @@ Depends:
     tidyverse,
     jsonlite,
     tidyquant,
-    openxlsx
+    openxlsx,
+    Rook
 LazyData: true
 RoxygenNote: 7.0.2

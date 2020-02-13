@@ -190,20 +190,39 @@ function(stocks = '["AAPL"]',
 #* @get /stocks_excel
 function(req, res,
          file_name = 'data.xlsx',
-         stocks = '["AAPL"]',
+         stocks = '["AAPL", "AMZN"]',
          startDate = '2019-01-01',
          endDate = '2020-01-01',
          DATA = TRUE) {
+
   message(glue('Within stocks_excel {Sys.time()}'))
   res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
-
 
   stock_data <- stockAPI::get_stocks(stocks = stocks,
                                      DATA = DATA,
                                      startDate = startDate,
                                      endDate = endDate)
   stock_data <- fromJSON(stock_data)
-  write.xlsx(x = stock_data, file = file_name, sheetName = 'sheet_1')
+
+  wb <- createWorkbook()
+  addWorksheet(wb, "stock_data")
+  writeDataTable(wb = wb, sheet = "stock_data", x = stock_data)
+
+  if(n_distinct(stock_data$symbol) > 1) {
+    cor_stock_data <-
+      stock_data %>%
+      select(date, symbol, adjusted) %>%
+      pivot_wider(names_from = symbol, values_from = c(
+        adjusted
+      )) %>%
+      select_if(is.numeric) %>%
+      cor
+
+    addWorksheet(wb = wb,sheetName =  "correlations")
+    writeDataTable(wb = wb,sheet =  "correlations", x = as.data.frame(cor_stock_data))
+  }
+
+  saveWorkbook(wb, file_name, overwrite = TRUE)
 
   bin <- readBin(file_name, "raw", n=file.info(file_name)$size)
   file.remove(file_name)
@@ -251,4 +270,31 @@ function(res, stocks = 2019, data = 'file2.csv', html_page=TRUE){
 }
 
 
+#* @param csv_file A string
+#* @get /submit_data
+function(res, csv_file){
 
+  print(res)
+  print(csv_file)
+}
+
+#' @param id An identifier
+#' @post /file_upload
+function(req){
+
+  resp <- Rook::Multipart$parse(req)
+  query_arguments <- shiny::parseQueryString(req$QUERY_STRING)
+  id <- query_arguments$id
+  print(id)
+  print(resp$filepond$filename)
+  write_file(read_file(resp$filepond$tempfile), file.path('files',
+                                                          resp$filepond$filename))
+  list(formContents = Rook::Multipart$parse(req))
+}
+
+
+#' @param id An identifier
+#' @get /print_data
+function(req, filename = 'files/lm.R'){
+  read_file(filename)
+}

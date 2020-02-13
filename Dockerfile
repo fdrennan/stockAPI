@@ -19,7 +19,7 @@ RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"
 
-
+ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
 
 RUN apt-get install -y \
