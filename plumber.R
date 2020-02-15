@@ -300,6 +300,7 @@ function(res, csv_file) {
 #' @post /file_upload
 function(req) {
 
+
   log_entry(req, 'file_upload')
 
   if (!dir.exists('files')) {

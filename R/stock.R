@@ -90,6 +90,11 @@ make_xlsx <- function(filename,
 postgres_connector <- function() {
   n <- 1
   message('First attempt at connection')
+  print(Sys.getenv('POSTGRES_HOST'))
+  print(Sys.getenv('POSTGRES_PORT'))
+  print(Sys.getenv('POSTGRES_USER'))
+  print(Sys.getenv('POSTGRES_PASSWORD'))
+  print(Sys.getenv('POSTGRES_DB'))
   repeat {
     connection <-
       try({
