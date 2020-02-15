@@ -14,6 +14,9 @@ Depends:
     jsonlite,
     tidyquant,
     openxlsx,
-    Rook
+    Rook,
+    dbplyr,
+    DBI,
+    RPostgres
 LazyData: true
 RoxygenNote: 7.0.2

@@ -4,7 +4,26 @@ services:
     image: reactr
     command: /app/plumber.R
     volumes:
-     - .:/app
+     - rapi:/app
     restart: always
     ports:
      - "8000:8000"
+  db:
+   image: postgres
+   container_name: connectr_postgres
+   restart: always
+   ports:
+     - '5432:5432'
+   expose:
+      # Opens port 5432 on the container
+     - '5432'
+    # Where our data will be persisted
+   volumes:
+     - postgres:/var/lib/postgresql/data
+   environment:
+     - POSTGRES_USER=${POSTGRES_USER}
+     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+     - POSTGRES_DB=${POSTGRES_DB}
+volumes:
+  postgres:
+  rapi:

@@ -46,8 +46,9 @@ cors <- function(req, res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
 
   if (req$REQUEST_METHOD == "OPTIONS") {
-    res$setHeader("Access-Control-Allow-Methods","*")
-    res$setHeader("Access-Control-Allow-Headers", req$HTTP_ACCESS_CONTROL_REQUEST_HEADERS)
+    res$setHeader("Access-Control-Allow-Methods", "*")
+    res$setHeader("Access-Control-Allow-Headers",
+                  req$HTTP_ACCESS_CONTROL_REQUEST_HEADERS)
     res$status <- 200
     return(list())
   } else {
@@ -75,51 +76,51 @@ cors <- function(req, res) {
 #* @param ma_days  Stocks in JSON
 #* @get /get_stocks
 function(stocks = '["AAPL"]',
-                       startDate = '2019-01-01',
-                       endDate = '2020-01-01',
-                       DATA = FALSE,
-                       ma_days = 50) {
+         startDate = '2019-01-01',
+         endDate = '2020-01-01',
+         DATA = FALSE,
+         ma_days = 50) {
   message(glue('Within get_stocks {Sys.time()}'))
 
   # Build the response object (list will be serialized as JSON)
-  response <- list(statusCode = 200,
-                   data = "",
-                   message = "Success!",
-                   metaData = list(
-                     args = list(
-                       stocks = stocks,
-                       DATA = DATA,
-                       startDate = startDate,
-                       endDate = endDate,
-                       ma_days = ma_days
-                     ),
-                     runtime = 0
-                   )
+  response <- list(
+    statusCode = 200,
+    data = "",
+    message = "Success!",
+    metaData = list(
+      args = list(
+        stocks = stocks,
+        DATA = DATA,
+        startDate = startDate,
+        endDate = endDate,
+        ma_days = ma_days
+      ),
+      runtime = 0
+    )
   )
 
 
-  response <- tryCatch(
-    {
+  response <- tryCatch({
+    # Run the algorithm
+    tic()
+    response$data <- stockAPI::get_stocks(
+      stocks = stocks,
+      DATA = DATA,
+      startDate = startDate,
+      endDate = endDate,
+      ma_days = ma_days
+    )
+    timer <- toc(quiet = T)
+    response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
-      # Run the algorithm
-      tic()
-      response$data <- stockAPI::get_stocks(stocks = stocks,
-                                            DATA = DATA,
-                                            startDate = startDate,
-                                            endDate = endDate,
-                                            ma_days = ma_days)
-      timer <- toc(quiet = T)
-      response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
+    return(response)
+  },
+  error = function(err) {
+    response$statusCode <- 400
+    response$message <- paste(err)
 
-      return(response)
-    },
-    error = function(err) {
-      response$statusCode <- 400
-      response$message <- paste(err)
-
-      return(response)
-    }
-  )
+    return(response)
+  })
 
   return(response)
 
@@ -140,42 +141,42 @@ function(stocks = '["AAPL"]',
 
   print(stocks)
   # Build the response object (list will be serialized as JSON)
-  response <- list(statusCode = 200,
-                   data = "",
-                   message = "Success!",
-                   metaData = list(
-                     args = list(
-                       stocks = stocks,
-                       DATA = DATA,
-                       startDate = startDate,
-                       endDate = endDate
-                     ),
-                     runtime = 0
-                   )
+  response <- list(
+    statusCode = 200,
+    data = "",
+    message = "Success!",
+    metaData = list(
+      args = list(
+        stocks = stocks,
+        DATA = DATA,
+        startDate = startDate,
+        endDate = endDate
+      ),
+      runtime = 0
+    )
   )
 
 
-  response <- tryCatch(
-    {
+  response <- tryCatch({
+    # Run the algorithm
+    tic()
+    response$data <- stockAPI::get_stocks(
+      stocks = stocks,
+      DATA = DATA,
+      startDate = startDate,
+      endDate = endDate
+    )
+    timer <- toc(quiet = T)
+    response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
-      # Run the algorithm
-      tic()
-      response$data <- stockAPI::get_stocks(stocks = stocks,
-                                            DATA = DATA,
-                                            startDate = startDate,
-                                            endDate = endDate)
-      timer <- toc(quiet = T)
-      response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
+    return(response)
+  },
+  error = function(err) {
+    response$statusCode <- 400
+    response$message <- paste(err)
 
-      return(response)
-    },
-    error = function(err) {
-      response$statusCode <- 400
-      response$message <- paste(err)
-
-      return(response)
-    }
-  )
+    return(response)
+  })
 
   return(response)
 
@@ -188,43 +189,46 @@ function(stocks = '["AAPL"]',
 #* @param startDate
 #* @param endDate
 #* @get /stocks_excel
-function(req, res,
+function(req,
+         res,
          file_name = 'data.xlsx',
          stocks = '["AAPL", "AMZN"]',
          startDate = '2019-01-01',
          endDate = '2020-01-01',
          DATA = TRUE) {
-
   message(glue('Within stocks_excel {Sys.time()}'))
-  res$setHeader("Content-Disposition", glue('attachment; filename={file_name}.xlsx'))
+  res$setHeader("Content-Disposition",
+                glue('attachment; filename={file_name}.xlsx'))
 
-  stock_data <- stockAPI::get_stocks(stocks = stocks,
-                                     DATA = DATA,
-                                     startDate = startDate,
-                                     endDate = endDate)
+  stock_data <- stockAPI::get_stocks(
+    stocks = stocks,
+    DATA = DATA,
+    startDate = startDate,
+    endDate = endDate
+  )
   stock_data <- fromJSON(stock_data)
 
   wb <- createWorkbook()
   addWorksheet(wb, "stock_data")
   writeDataTable(wb = wb, sheet = "stock_data", x = stock_data)
 
-  if(n_distinct(stock_data$symbol) > 1) {
+  if (n_distinct(stock_data$symbol) > 1) {
     cor_stock_data <-
       stock_data %>%
       select(date, symbol, adjusted) %>%
-      pivot_wider(names_from = symbol, values_from = c(
-        adjusted
-      )) %>%
+      pivot_wider(names_from = symbol, values_from = c(adjusted)) %>%
       select_if(is.numeric) %>%
       cor
 
-    addWorksheet(wb = wb,sheetName =  "correlations")
-    writeDataTable(wb = wb,sheet =  "correlations", x = as.data.frame(cor_stock_data))
+    addWorksheet(wb = wb, sheetName =  "correlations")
+    writeDataTable(wb = wb,
+                   sheet =  "correlations",
+                   x = as.data.frame(cor_stock_data))
   }
 
   saveWorkbook(wb, file_name, overwrite = TRUE)
 
-  bin <- readBin(file_name, "raw", n=file.info(file_name)$size)
+  bin <- readBin(file_name, "raw", n = file.info(file_name)$size)
   file.remove(file_name)
 
   bin
@@ -235,17 +239,24 @@ function(req, res,
 
 #* @serializer contentType list(type="application/pdf")
 #* @get /pdf
-function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=FALSE){
+function(res,
+         stocks = 2019,
+         region = 'Asia',
+         data = 'file2.csv',
+         html_page = FALSE) {
   tmp <- tempfile()
-  rmarkdown::render("base_notebook.Rmd",
-                    output_format = 'pdf_document',
-                    params = list(
-                      stocks = stocks,
-                      data = data,
-                      html_page = html_page
-                    ), output_file = tmp)
+  rmarkdown::render(
+    "base_notebook.Rmd",
+    output_format = 'pdf_document',
+    params = list(
+      stocks = stocks,
+      data = data,
+      html_page = html_page
+    ),
+    output_file = tmp
+  )
 
-  readBin(glue('{tmp}.pdf'), "raw", n=file.info(glue('{tmp}.pdf'))$size)
+  readBin(glue('{tmp}.pdf'), "raw", n = file.info(glue('{tmp}.pdf'))$size)
 }
 
 
@@ -253,17 +264,23 @@ function(res, stocks = 2019, region = 'Asia', data = 'file2.csv', html_page=FALS
 
 #* @param year A number
 #* @get /html
-function(res, stocks = 2019, data = 'file2.csv', html_page=TRUE){
+function(res,
+         stocks = 2019,
+         data = 'file2.csv',
+         html_page = TRUE) {
   tmp <- tempfile()
 
 
-  rmarkdown::render("base_notebook.Rmd",
-                    output_format = 'html_document',
-                    params = list(
-                      stocks = stocks,
-                      data = data,
-                      html_page=html_page
-                    ), output_file = tmp)
+  rmarkdown::render(
+    "base_notebook.Rmd",
+    output_format = 'html_document',
+    params = list(
+      stocks = stocks,
+      data = data,
+      html_page = html_page
+    ),
+    output_file = tmp
+  )
 
   include_html(glue('{tmp}.html'), res)
   # readBin(glue('{tmp}.html'), "raw", n=file.info(glue('{tmp}.html'))$size)
@@ -272,29 +289,33 @@ function(res, stocks = 2019, data = 'file2.csv', html_page=TRUE){
 
 #* @param csv_file A string
 #* @get /submit_data
-function(res, csv_file){
-
+function(res, csv_file) {
   print(res)
   print(csv_file)
 }
 
 #' @param id An identifier
 #' @post /file_upload
-function(req){
+function(req) {
+  if (!dir.exists('files')) {
+    dir.create('files')
+  }
 
   resp <- Rook::Multipart$parse(req)
   query_arguments <- shiny::parseQueryString(req$QUERY_STRING)
   id <- query_arguments$id
   print(id)
   print(resp$filepond$filename)
-  write_file(read_file(resp$filepond$tempfile), file.path('files',
-                                                          resp$filepond$filename))
+  total_path = file.path('files', resp$filepond$filename)
+  fs::dir_ls('files')
+  write_file(read_file(resp$filepond$tempfile), total_path)
+  fs::dir_ls('files')
   list(formContents = Rook::Multipart$parse(req))
 }
 
 
 #' @param id An identifier
 #' @get /print_data
-function(req, filename = 'files/lm.R'){
+function(req, filename = 'files/lm.R') {
   read_file(filename)
 }

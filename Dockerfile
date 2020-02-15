@@ -18,6 +18,7 @@ RUN R -e "install.packages('tidyverse')"
 RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"
+RUN R -e "install.packages('Rook')"
 
 ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
@@ -25,7 +26,7 @@ RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
 RUN apt-get install -y \
   texlive-latex-recommended \
   pandoc
-
+ARG DUMMY=unknown
 COPY base_notebook.Rmd base_notebook.Rmd
 COPY plumber.R /app/plumber.R
 
