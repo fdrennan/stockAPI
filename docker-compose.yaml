@@ -3,8 +3,6 @@ services:
   app1:
     image: reactr
     command: /app/plumber.R
-    volumes:
-     - rapi:/app
     restart: always
     ports:
      - "8000:8000"
@@ -30,4 +28,4 @@ services:
      - POSTGRES_DB=${POSTGRES_DB}
 volumes:
   postgres:
-  rapi:
+

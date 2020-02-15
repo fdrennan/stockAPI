@@ -24,6 +24,7 @@ RUN R -e "install.packages('Rook')"
 RUN R -e "install.packages('jsonlite')"
 RUN R -e "install.packages('RPostgres')"
 RUN R -e "install.packages('dotenv')"
+RUN R -e "install.packages('Rcpp')"
 
 ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
