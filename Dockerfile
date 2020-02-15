@@ -8,6 +8,8 @@ RUN apt-get update --allow-releaseinfo-change -qq && apt-get install -y \
   default-jdk \
   libcurl4-openssl-dev \
   libxml2-dev \
+  texlive-latex-recommended \
+  pandoc \
   libpq-dev -y
 
 RUN R CMD javareconf
@@ -21,13 +23,10 @@ RUN R -e "install.packages('openxlsx')"
 RUN R -e "install.packages('Rook')"
 RUN R -e "install.packages('jsonlite')"
 RUN R -e "install.packages('RPostgres')"
+RUN R -e "install.packages('dotenv')"
 
 ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'
-
-RUN apt-get install -y \
-  texlive-latex-recommended \
-  pandoc
 ARG DUMMY=unknown
 COPY base_notebook.Rmd base_notebook.Rmd
 COPY plumber.R /app/plumber.R

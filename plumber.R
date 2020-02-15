@@ -6,6 +6,8 @@ library(tictoc)
 
 create_env()
 
+print(read_file('.env'))
+
 message(glue('Within Plumber API {Sys.time()}'))
 # serializer_excel <- function(){
 #   function(val, req, res, errorHandler){
