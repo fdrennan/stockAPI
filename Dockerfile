@@ -19,6 +19,8 @@ RUN R -e "install.packages('tidyquant')"
 RUN R -e "install.packages('tictoc')"
 RUN R -e "install.packages('openxlsx')"
 RUN R -e "install.packages('Rook')"
+RUN R -e "install.packages('jsonlite')"
+RUN R -e "install.packages('RPostgres')"
 
 ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'

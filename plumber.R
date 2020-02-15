@@ -4,6 +4,8 @@ library(plumber)
 library(stockAPI)
 library(tictoc)
 
+create_env()
+
 message(glue('Within Plumber API {Sys.time()}'))
 # serializer_excel <- function(){
 #   function(val, req, res, errorHandler){
@@ -297,6 +299,9 @@ function(res, csv_file) {
 #' @param id An identifier
 #' @post /file_upload
 function(req) {
+
+  log_entry(req, 'file_upload')
+
   if (!dir.exists('files')) {
     dir.create('files')
   }
@@ -319,3 +324,6 @@ function(req) {
 function(req, filename = 'files/lm.R') {
   read_file(filename)
 }
+
+
+

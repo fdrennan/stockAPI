@@ -116,10 +116,38 @@ postgres_connector <- function() {
 }
 
 #' @export log_entry
-log_entry = function() {
+log_entry = function(req, func = NA) {
   con = postgres_connector()
   on.exit(dbDisconnect(con))
-  current_time <- Sys.time()
-  store <- tibble(time = current_time)
-  dbAppendTable(con, 'api_calls', store)
+  store <- tibble(time = Sys.time(),
+                  http_origin = req$HTTP_ORIGIN,
+                  remote_addr = req$REMOTE_ADDR,
+                  call = func)
+
+  dbWriteTable(con, 'api_calls', store, append=TRUE)
 }
+
+#' @export create_env
+create_env = function(location = '.env') {
+  if(file_exists(location)) {
+    file_delete(location)
+  }
+  system(glue('printenv >> {location}'))
+  clean_env(location)
+  load_dot_env()
+}
+
+#' @export clean_env
+clean_env = function(env_location ='.env') {
+  env_file = read_file(env_location)
+  tibble(
+    variables = unlist(str_split(env_file, "\n"))
+  ) %>%
+    filter(!str_detect(variables, 'alias'),
+           !str_detect(variables, 'export ')) %>%
+    pull(variables) %>%
+    paste(collapse = "\n") %>%
+    write_file('.env')
+}
+
+

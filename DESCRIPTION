@@ -17,6 +17,8 @@ Depends:
     Rook,
     dbplyr,
     DBI,
-    RPostgres
+    RPostgres,
+    dotenv,
+    fs
 LazyData: true
 RoxygenNote: 7.0.2
