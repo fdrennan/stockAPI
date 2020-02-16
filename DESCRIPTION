@@ -21,6 +21,9 @@ Depends:
     dotenv,
     fs,
     biggr,
-    ipify
+    ipify,
+    reticulate
 LazyData: true
 RoxygenNote: 7.0.2
+
+

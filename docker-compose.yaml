@@ -12,6 +12,9 @@ services:
      - POSTGRES_DB=${POSTGRES_DB}
      - POSTGRES_PORT=${POSTGRES_PORT}
      - POSTGRES_HOST=${POSTGRES_HOST}
+     - AWS_ACCESS=${AWS_ACCESS}
+     - AWS_SECRET=${AWS_SECRET}
+     - AWS_REGION=${AWS_REGION}
     working_dir: /app
     links:
       - "db:database"

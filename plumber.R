@@ -3,12 +3,22 @@
 library(plumber)
 library(stockAPI)
 library(tictoc)
-
+# install_python(envname = 'biggr')
 create_env()
+use_virtualenv('biggr')
+
+configure_aws(
+  aws_access_key_id     = Sys.getenv('AWS_ACCESS'),
+  aws_secret_access_key = Sys.getenv('AWS_SECRET'),
+  default.region        = Sys.getenv('AWS_REGION')
+)
+
 
 print(read_file('.env'))
-print(get_ip())
+print(ipify::get_ip())
 message(glue('Within Plumber API {Sys.time()}'))
+
+
 # serializer_excel <- function(){
 #   function(val, req, res, errorHandler){
 #     tryCatch({
@@ -301,8 +311,7 @@ function(res, csv_file) {
 #' @param id An identifier
 #' @post /file_upload
 function(req) {
-
-
+  # biggr::s3_create_bucket('drenruploadapi')
   log_entry(req, 'file_upload')
 
   if (!dir.exists('files')) {
@@ -317,6 +326,7 @@ function(req) {
   total_path = file.path('files', resp$filepond$filename)
   fs::dir_ls('files')
   write_file(read_file(resp$filepond$tempfile), total_path)
+  s3_upload_file(bucket = 'drenruploadapi', from = total_path, to = total_path)
   fs::dir_ls('files')
   list(formContents = Rook::Multipart$parse(req))
 }
