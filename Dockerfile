@@ -25,6 +25,8 @@ RUN R -e "install.packages('jsonlite')"
 RUN R -e "install.packages('RPostgres')"
 RUN R -e "install.packages('dotenv')"
 RUN R -e "install.packages('Rcpp')"
+RUN R -e 'devtools::install_github("fdrennan/biggr")'
+RUN R -e 'devtools::install_github("gregce/ipify")'
 
 ARG DUMMY=unknown
 RUN R -e 'devtools::install_github("fdrennan/stockAPI")'

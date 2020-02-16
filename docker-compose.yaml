@@ -1,4 +1,4 @@
-version: '2'
+version: '3.4'
 services:
   app1:
     image: reactr
@@ -10,6 +10,11 @@ services:
      - POSTGRES_USER=${POSTGRES_USER}
      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
      - POSTGRES_DB=${POSTGRES_DB}
+     - POSTGRES_PORT=${POSTGRES_PORT}
+     - POSTGRES_HOST=${POSTGRES_HOST}
+    working_dir: /app
+    links:
+      - "db:database"
   db:
    image: postgres
    container_name: connectr_postgres

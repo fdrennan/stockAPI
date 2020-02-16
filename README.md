@@ -4,3 +4,5 @@ docker build --build-arg DUMMY=`date +%s` -t reactr .
 https://github.com/docker/hub-feedback/issues/1222
 docker exec -it stockapi_app1_1 bin/bash
 
+
+docker network create -d bridge api-network

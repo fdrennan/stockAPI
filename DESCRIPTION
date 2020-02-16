@@ -19,6 +19,8 @@ Depends:
     DBI,
     RPostgres,
     dotenv,
-    fs
+    fs,
+    biggr,
+    ipify
 LazyData: true
 RoxygenNote: 7.0.2
